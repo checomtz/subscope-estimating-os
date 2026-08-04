@@ -626,9 +626,12 @@ elif page == "Quote Parsing & Entry":
     
     with col1:
         st.markdown("### Document Upload")
-        api_key = st.secrets.get("GEMINI_API_KEY", "")
+        api_key = os.environ.get("GEMINI_API_KEY", "")
         if not api_key:
-            api_key = st.text_input("Gemini API Key", type="password")
+            try:
+                api_key = st.secrets.get("GEMINI_API_KEY", "")
+            except Exception:
+                api_key = ""
         uploaded_pdf = st.file_uploader("Upload Proposal PDF", type=["pdf"])
         if uploaded_pdf:
             display_pdf(uploaded_pdf)
