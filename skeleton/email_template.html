@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SubScope Correspondence</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #F1F5F9; color: #1E293B;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F1F5F9; padding: 30px 15px;">
+        <tr>
+            <td align="center">
+                <!-- Main Email Card -->
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    
+                    <!-- Header Banner -->
+                    <tr>
+                        <td style="background-color: #0F172A; padding: 25px 30px; text-align: left;">
+                            <span style="font-size: 22px; font-weight: 800; color: #38BDF8; letter-spacing: -0.5px;">SubScope</span>
+                            <span style="font-size: 12px; color: #94A3B8; margin-left: 10px; text-transform: uppercase; letter-spacing: 1px;">Estimating Department</span>
+                        </td>
+                    </tr>
+
+                    <!-- Email Content Body -->
+                    <tr>
+                        <td style="padding: 35px 30px; line-height: 1.6; font-size: 15px; color: #334155;">
+                            <p style="margin-top: 0; margin-bottom: 20px;">
+                                Hello <strong>{{ sub_name }}</strong> Team,
+                            </p>
+                            <p style="margin-bottom: 25px;">
+                                Thank you for submitting your proposal for the <strong>{{ project_name }}</strong> project. Our estimating team is currently leveling all bids for the <strong>{{ trade_name }}</strong> trade package.
+                            </p>
+
+                            <!-- Quote Summary Callout Box -->
+                            <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-left: 4px solid #0284C7; border-radius: 6px; margin-bottom: 25px;">
+                                <tr>
+                                    <td style="padding: 18px 20px;">
+                                        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748B;">Current Proposal on File</div>
+                                        <div style="font-size: 20px; font-weight: 800; color: #0F172A; margin-top: 4px;">${{ base_bid }}</div>
+                                        <div style="font-size: 13px; color: #475569; margin-top: 6px;">Scope Inclusions: <em>{{ inclusions_summary }}</em></div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="margin-bottom: 20px;">
+                                To ensure we have an accurate apples-to-apples comparison, please review the scope exclusions and confirm whether your proposal includes standard turnover requirements and site cleanup.
+                            </p>
+                            <p style="margin-bottom: 30px;">
+                                If you need to submit a revised quotation before final award decisions are finalized, please reply directly to this notice.
+                            </p>
+
+                            <!-- Signature -->
+                            <p style="margin-bottom: 4px; color: #0F172A; font-weight: 700;">{{ sender_name }}</p>
+                            <p style="margin: 0; font-size: 13px; color: #64748B;">Preconstruction & Estimating | Northstar Development Group</p>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #F8FAFC; border-top: 1px solid #E2E8F0; padding: 20px 30px; text-align: center; font-size: 12px; color: #94A3B8;">
+                            Sent via SubScope Estimating OS &bull; Automated Proposal Leveling
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

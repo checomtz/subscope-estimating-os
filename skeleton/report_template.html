@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SubScope | Bid Leveling & Executive Recommendation</title>
+    <style>
+        /* Document & Print Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #F8FAFC;
+            color: #1E293B;
+            line-height: 1.5;
+            padding: 40px;
+        }
+        .report-container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: #FFFFFF;
+            border: 1px solid #CBD5E1;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 4px 6px rgba(15, 23, 42, 0.04);
+        }
+        
+        /* Header Banner */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid #0284C7;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0284C7;
+            letter-spacing: -0.5px;
+        }
+        .doc-meta {
+            text-align: right;
+            font-size: 13px;
+            color: #64748B;
+        }
+        .doc-meta strong {
+            color: #0F172A;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #0F172A;
+            margin-bottom: 12px;
+            border-left: 4px solid #0284C7;
+            padding-left: 10px;
+        }
+
+        /* KPI Summary Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .kpi-card {
+            background: #F1F5F9;
+            border: 1px solid #E2E8F0;
+            border-radius: 6px;
+            padding: 15px;
+        }
+        .kpi-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #64748B;
+        }
+        .kpi-value {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0284C7;
+            margin-top: 4px;
+        }
+
+        /* Bid Leveling Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            font-size: 13px;
+        }
+        th {
+            background-color: #0F172A;
+            color: #FFFFFF;
+            text-align: left;
+            padding: 12px 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #E2E8F0;
+            color: #334155;
+        }
+        tr:nth-child(even) {
+            background-color: #F8FAFC;
+        }
+        .text-right {
+            text-align: right;
+        }
+        .font-bold {
+            font-weight: 700;
+            color: #0F172A;
+        }
+        .badge-winner {
+            background-color: #D1FAE5;
+            color: #065F46;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        /* Notes Block */
+        .notes-box {
+            background: #EFF6FF;
+            border-left: 4px solid #3B82F6;
+            padding: 15px;
+            font-size: 13px;
+            color: #1E3A8A;
+            margin-bottom: 35px;
+        }
+
+        /* Formal Approval Sign-off */
+        .signoff-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 50px;
+            border-top: 1px solid #CBD5E1;
+            padding-top: 30px;
+        }
+        .sign-line {
+            border-bottom: 1px solid #94A3B8;
+            height: 40px;
+            margin-bottom: 8px;
+        }
+        .sign-label {
+            font-size: 12px;
+            color: #64748B;
+            font-weight: 600;
+        }
+
+        /* Print Settings */
+        @media print {
+            body {
+                background: #FFFFFF;
+                padding: 0;
+            }
+            .report-container {
+                border: none;
+                box-shadow: none;
+                padding: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-area">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 21H21" stroke="#0284C7" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M5 21V7L13 3V21" stroke="#0284C7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M19 21V11L13 7" stroke="#0284C7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9 9V9.01" stroke="#0284C7" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M9 13V13.01" stroke="#0284C7" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+                <span class="logo-title">SubScope</span>
+            </div>
+            <div class="doc-meta">
+                <p><strong>BID LEVELING & RECOMMENDATION PACKAGE</strong></p>
+                <p>Project: <strong>{{ project_name }}</strong></p>
+                <p>Trade Scope: <strong>{{ trade_name }}</strong></p>
+                <p>Date: {{ report_date }}</p>
+            </div>
+        </div>
+
+        <!-- KPI Metrics -->
+        <h2>Executive Overview</h2>
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-label">Proposals Evaluated</div>
+                <div class="kpi-value">{{ total_proposals }}</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Average Bid Spread</div>
+                <div class="kpi-value">{{ avg_bid_spread }}%</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Recommended Contract</div>
+                <div class="kpi-value" style="color: #059669;">${{ recommended_val }}</div>
+            </div>
+        </div>
+
+        <!-- Leveling Table -->
+        <h2>Apples-to-Apples Leveling Matrix</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Subcontractor</th>
+                    <th>Base Bid</th>
+                    <th>Scope Adjustments</th>
+                    <th>Normalized Total</th>
+                    <th>Status / Award</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Python injects repeating rows here -->
+                {{ table_rows }}
+            </tbody>
+        </table>
+
+        <!-- Estimator Recommendation Notes -->
+        <h2>Estimating Team Recommendation</h2>
+        <div class="notes-box">
+            <strong>Scope & Leveling Summary:</strong><br>
+            {{ recommendation_notes }}
+        </div>
+
+        <!-- Approval Sign-off -->
+        <div class="signoff-section">
+            <div>
+                <div class="sign-line"></div>
+                <div class="sign-label">Lead Estimator / Project Engineer Approval</div>
+            </div>
+            <div>
+                <div class="sign-line"></div>
+                <div class="sign-label">Executive / Ownership Sign-Off</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

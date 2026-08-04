@@ -1,0 +1,162 @@
+/* =========================================================
+   SUBSCOPE ENTERPRISE DESIGN SYSTEM (MODERN SAAS THEME)
+   ========================================================= */
+
+/* Hide Streamlit's Automatic Top Page Navigation & Menu */
+[data-testid="stSidebarNav"] {
+    display: none !important;
+}
+#MainMenu { visibility: hidden; }
+footer { visibility: hidden; }
+header { visibility: hidden; }
+
+/* Overall App Background & Page Layout */
+.stApp {
+    background-color: #F8FAFC;
+    color: #1E293B;
+}
+.block-container {
+    padding-top: 1.5rem;
+    padding-bottom: 3rem;
+    max-width: 1600px;
+}
+
+/* Primary Typography */
+h1 {
+    color: #0F172A;
+    font-weight: 800;
+    letter-spacing: -0.6px;
+    margin-bottom: 0.25rem;
+}
+h2 {
+    color: #1E293B;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-top: 1rem;
+}
+h3, h4 {
+    color: #334155;
+    font-weight: 600;
+}
+p, span, label {
+    color: #475569;
+}
+
+/* KPI Executive Metric Cards */
+div[data-testid="metric-container"] {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-left: 5px solid #0284C7;
+    padding: 16px 20px;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+div[data-testid="metric-container"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(15, 23, 42, 0.06);
+}
+div[data-testid="stMetric"]:nth-of-type(2) div[data-testid="metric-container"] { 
+    border-left-color: #059669; 
+}
+div[data-testid="stMetric"]:nth-of-type(3) div[data-testid="metric-container"] { 
+    border-left-color: #D97706; 
+}
+div[data-testid="stMetric"] label {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748B !important;
+}
+div[data-testid="stMetric"] div[data-testid="stMetricValue"] {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: #0F172A !important;
+}
+
+/* Sidebar Styling */
+[data-testid="stSidebar"] {
+    background-color: #F1F5F9 !important;
+    border-right: 1px solid #CBD5E1;
+}
+[data-testid="stSidebar"] h2 {
+    color: #0F172A !important;
+}
+
+/* Horizontal Tabs */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 16px;
+    border-bottom: 2px solid #E2E8F0;
+}
+.stTabs [data-baseweb="tab"] {
+    height: 45px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #64748B;
+}
+.stTabs [aria-selected="true"] {
+    color: #0284C7 !important;
+    border-bottom-color: #0284C7 !important;
+}
+
+/* Logo & Hero Splash */
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+.logo-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0284C7 !important;
+}
+.splash-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 40px 30px;
+    box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+/* Streamlit Containers (Cards) */
+div[data-testid="stVerticalBlock"] > div[data-testid="stContainer"] {
+    background-color: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+    margin-bottom: 16px;
+}
+
+/* Expanders */
+div[data-testid="stExpander"] {
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1 !important;
+    border-radius: 8px !important;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+div[data-testid="stExpander"] details summary p {
+    font-weight: 600 !important;
+    color: #1E293B !important;
+}
+
+/* Buttons */
+div[data-testid="stButton"] button[kind="primary"],
+div[data-testid="stDownloadButton"] button[kind="primary"] {
+    background-color: #0284C7 !important;
+    color: #FFFFFF !important;
+    border: 1px solid #0284C7 !important;
+    border-radius: 6px;
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(2, 132, 199, 0.2);
+}
+div[data-testid="stButton"] button[kind="primary"]:hover,
+div[data-testid="stDownloadButton"] button[kind="primary"]:hover {
+    background-color: #0369A1 !important;
+    border-color: #0369A1 !important;
+}
