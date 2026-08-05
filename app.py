@@ -24,6 +24,35 @@ from utils import (
 )
 from datetime import datetime
 
+def require_auth():
+    """Simple password gate using Streamlit Session State and environment variables."""
+    # Pull secure passcode from Render environment (defaults to 'dev123' only for local testing)
+    expected_password = os.environ.get("APP_PASSWORD", "dev123")
+    
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated = False
+
+    if not st.session_state.authenticated:
+        st.markdown("## 🔒 SubScope OS — Authorized Access Only")
+        st.caption("Please enter your team passcode to access the preconstruction dashboard.")
+        
+        with st.form("login_form", clear_on_submit=True):
+            password_input = st.text_input("Passcode", type="password")
+            submitted = st.form_submit_button("Log In")
+            
+            if submitted:
+                if password_input == expected_password:
+                    st.session_state.authenticated = True
+                    st.rerun()
+                else:
+                    st.error("❌ Incorrect passcode. Access denied.")
+        return False
+    return True
+
+# --- PLACE THIS RIGHT BEFORE YOUR MAIN APP LOGIC ---
+if not require_auth():
+    st.stop()
+
 # ----------------------------------------
 # 1. Page Configuration & Design
 # ----------------------------------------
