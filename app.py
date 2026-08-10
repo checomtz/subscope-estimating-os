@@ -1,6 +1,7 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
+import utils
 import io
 import os
 import streamlit.components.v1 as components
@@ -664,6 +665,19 @@ elif page == "Quote Parsing & Entry":
         uploaded_pdf = st.file_uploader("Upload Proposal PDF", type=["pdf"])
         if uploaded_pdf:
             display_pdf(uploaded_pdf)
+
+            # Create the requirement text for the AI
+            requirements_list = ""
+            if not takeoffs_df.empty:
+                for _, row in takeoffs_df.iterrows():
+                    requirements_list += f"- Need {row['Quantity']} {row['Unit']} of {row['Scope / Material']} for {row['Trade']}\n"
+
+            # Call the AI, now passing the requirements list directly into the prompt injection parameters
+            ai_result = utils.process_with_gemini(
+                uploaded_pdf, 
+                api_key=api_key, 
+                required_materials_text=requirements_list
+            )
             
     with col2:
         st.markdown("### AI Extraction & Verification")
@@ -1145,7 +1159,7 @@ elif page == "Material Management":
             st.caption("No materials or bids available to generate subcontractor roll-up summaries.")
 
     with t2:
-        st.markdown("### Internal Estimating Takeoff Benchmark Editor")
+        st.markdown("### 📋 Internal Estimating Takeoff Benchmark Editor")
         st.caption("Enter your preconstruction estimating takeoff quantities below. The engine will automatically compare bidder quantities against these targets.")
         
         proj_label_takeoffs = selected_project if selected_project != "All" else "Metro Commercial Center"

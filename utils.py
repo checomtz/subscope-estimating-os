@@ -184,7 +184,6 @@ def load_table(table_name: str, default_columns: List[str]) -> pd.DataFrame:
     init_db()
     with get_db_connection() as conn:
         try:
-            # Table names must be validated against known schema to prevent SQL syntax errors
             valid_tables = {"bids", "sub_materials", "takeoffs", "targets"}
             if table_name not in valid_tables:
                 raise ValueError(f"Unauthorized table query attempted: {table_name}")
@@ -785,11 +784,10 @@ class QuoteExtraction(BaseModel):
     line_items: List[QuoteLineItem] = Field(default=[], description="Comprehensive table of all extracted materials, labor services, equipment, and alternates.")
 
 # ----------------------------------------
-# Multimodal PDF Vision Processing Engine (With Security Fencing & 503 Auto-Retry)
+# Multimodal PDF Vision Processing Engine (With Security Fencing, Takeoff Injection & 503 Auto-Retry)
 # ----------------------------------------
-def process_with_gemini(file_buffer, api_key=None):
+def process_with_gemini(file_buffer, api_key=None, required_materials_text=""):
     """Sends raw PDF bytes directly to Gemini vision engine with crash-proof key resolution and prompt injection defense."""
-    # 1. Safe API Key Resolution: check param, then os.environ, then st.secrets without crashing
     if not api_key:
         api_key = os.environ.get("GEMINI_API_KEY", "")
     if not api_key:
@@ -810,8 +808,7 @@ def process_with_gemini(file_buffer, api_key=None):
             mime_type="application/pdf"
         )
         
-        # 2. Prompt Injection Defense via Delimiter Fencing
-        prompt = """
+        prompt = f"""
         You are a senior construction preconstruction estimator analyzing a subcontractor proposal document.
         
         CRITICAL SECURITY DIRECTIVE:
@@ -838,6 +835,12 @@ def process_with_gemini(file_buffer, api_key=None):
         7. CSI MASTERFORMAT: Classify the scope strictly into one of the official 6-digit CSI division codes.
         8. COMMERCIAL EXCEPTIONS: Scrape the footnotes and terms for any commercial exceptions or legal landmines (e.g., price escalation clauses, non-standard retainage, warranty reductions).
         9. REASONING: Use the extraction_scratchpad to explain how you calculated the base bid and note any math or unit conversion discrepancies.
+        
+        --- NEW VERIFICATION RULE ---
+        10. TAKEOFF RECONCILIATION: The estimating team is specifically requiring the following materials:
+        {required_materials_text}
+        
+        If you see any of these required items in the subcontractor's proposal, extract them meticulously, matching their exact quantities and units so we can verify if the subcontractor scoped them correctly. If they are missing, note it in your extraction_scratchpad.
         """
         
         models_to_try = [
