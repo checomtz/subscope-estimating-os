@@ -808,6 +808,9 @@ def process_with_gemini(file_buffer, api_key=None, required_materials_text=""):
             mime_type="application/pdf"
         )
         
+        # Create a formatted list of the exact CSI codes for the AI to choose from
+        csi_options = "\n           - ".join(CSI_CODES)
+        
         prompt = f"""
         You are a senior construction preconstruction estimator analyzing a subcontractor proposal document.
         
@@ -832,7 +835,8 @@ def process_with_gemini(file_buffer, api_key=None, required_materials_text=""):
         4. QUANTITY & PRICE AUDIT: Ensure that (quantity * unit_price) approximates total_price. If a row only lists a total cost without a unit price, set quantity to 1.0, unit to 'Lump Sum', and unit_price equal to total_price.
         5. CATEGORIZATION: Classify each line item strictly under 'category' as 'Material', 'Labor / Service', 'Equipment', 'Allowance', or 'Alternate'.
         6. BASE BID INCLUSION: Set included_in_base to True if the item is part of the base contract price, or False if it is an optional alternate.
-        7. CSI MASTERFORMAT: Classify the scope strictly into one of the official 6-digit CSI division codes.
+        7. CSI MASTERFORMAT: Classify the scope strictly into one of the following exact options (do not deviate from these strings):
+           - {csi_options}
         8. COMMERCIAL EXCEPTIONS: Scrape the footnotes and terms for any commercial exceptions or legal landmines (e.g., price escalation clauses, non-standard retainage, warranty reductions).
         9. REASONING: Use the extraction_scratchpad to explain how you calculated the base bid and note any math or unit conversion discrepancies.
         
