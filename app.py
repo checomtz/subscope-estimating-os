@@ -19,6 +19,7 @@ from utils import (
     reconcile_takeoff_quantities,
     generate_subcontract_loi_pdf,
     generate_leveling_matrix,
+    process_takeoffs_with_gemini,
     CSI_CODES,
     SCOPE_GAP_TEMPLATES,
     DB_FILE
@@ -636,19 +637,6 @@ elif page == "Quote Parsing & Entry":
         uploaded_pdf = st.file_uploader("Upload Proposal PDF", type=["pdf"])
         if uploaded_pdf:
             display_pdf(uploaded_pdf)
-
-            # Create the requirement text for the AI
-            requirements_list = ""
-            if not takeoffs_df.empty:
-                for _, row in takeoffs_df.iterrows():
-                    requirements_list += f"- Need {row['Quantity']} {row['Unit']} of {row['Scope / Material']} for {row['Trade']}\n"
-
-            # Call the AI, now passing the requirements list directly into the prompt injection parameters
-            ai_result = utils.process_with_gemini(
-                uploaded_pdf, 
-                api_key=api_key, 
-                required_materials_text=requirements_list
-            )
             
     with col2:
         st.markdown("### AI Extraction & Verification")
@@ -656,7 +644,14 @@ elif page == "Quote Parsing & Entry":
         
         if uploaded_pdf and api_key and st.button("Run AI Extraction", type="primary", use_container_width=True):
             with st.spinner("Analyzing document visual structure, legal clauses, and line items..."):
-                res = process_with_gemini(uploaded_pdf, api_key)
+                
+                # Create the requirement text for the AI (Moved inside the button!)
+                requirements_list = ""
+                if not takeoffs_df.empty:
+                    for _, row in takeoffs_df.iterrows():
+                        requirements_list += f"- Need {row['Quantity']} {row['Unit']} of {row['Scope / Material']} for {row['Trade']}\n"
+
+                res = process_with_gemini(uploaded_pdf, api_key, required_materials_text=requirements_list)
                 if res:
                     st.session_state.temp_ai = res
                     st.success("Extraction complete.")
@@ -1134,6 +1129,32 @@ elif page == "Material Management":
         st.caption("Enter your preconstruction estimating takeoff quantities below. The engine will automatically compare bidder quantities against these targets.")
         
         proj_label_takeoffs = selected_project if selected_project != "All" else "Metro Commercial Center"
+        
+        with st.expander("🤖 AI Takeoff Import (Upload Bill of Materials PDF)", expanded=False):
+            takeoff_pdf = st.file_uploader("Upload your Engineer's Takeoff or Bill of Materials", type=["pdf"], key="takeoff_pdf")
+            if takeoff_pdf and st.button("Extract Requirements from Document", type="primary"):
+                api_key = os.environ.get("GEMINI_API_KEY", "") or st.secrets.get("GEMINI_API_KEY", "")
+                with st.spinner("Extracting required materials..."):
+                    res = process_takeoffs_with_gemini(takeoff_pdf, api_key)
+                    if res and "items" in res:
+                        new_rows = []
+                        for item in res["items"]:
+                            new_rows.append({
+                                "Trade": item.get("trade", CSI_CODES[0]),
+                                "Scope / Material": item.get("description", "Unknown Material"),
+                                "Project": proj_label_takeoffs,
+                                "Quantity": item.get("quantity", 1.0),
+                                "Unit": item.get("unit", "Lump Sum"),
+                                "Est. Unit Cost ($)": item.get("unit_cost", 0.0)
+                            })
+                        if new_rows:
+                            updated_takeoffs = pd.concat([takeoffs_df, pd.DataFrame(new_rows)], ignore_index=True)
+                            save_table("takeoffs", updated_takeoffs)
+                            st.toast(f"Successfully imported {len(new_rows)} requirements!")
+                            st.rerun()
+                    else:
+                        st.error("Could not extract items from this document.")
+
         current_takeoffs = takeoffs_df[takeoffs_df["Project"] == proj_label_takeoffs] if not takeoffs_df.empty else pd.DataFrame()
         if current_takeoffs.empty:
             current_takeoffs = pd.DataFrame([

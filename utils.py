@@ -783,6 +783,75 @@ class QuoteExtraction(BaseModel):
     commercial_exceptions: List[str] = Field(default=[], description="List any buried legal landmines or commercial exceptions, such as material price escalation clauses, uncapped liquidated damages, non-standard retainage, or shortened warranties.")
     line_items: List[QuoteLineItem] = Field(default=[], description="Comprehensive table of all extracted materials, labor services, equipment, and alternates.")
 
+class TakeoffItem(BaseModel):
+    trade: str = Field(description="Must match exactly one official CSI MasterFormat division code.")
+    description: str = Field(description="Exact description of the material or scope.")
+    quantity: float = Field(description="Numerical quantity needed.")
+    unit: Literal["SqFt", "LnFt", "CuYd", "SqYd", "Ea", "Hrs", "Ton", "Lbs", "Gal", "Lump Sum"] = Field(default="Lump Sum")
+    unit_cost: float = Field(default=0.0, description="Estimated unit cost if provided.")
+
+class TakeoffExtraction(BaseModel):
+    items: List[TakeoffItem] = Field(default=[], description="List of extracted takeoff requirements.")
+
+def process_takeoffs_with_gemini(file_buffer, api_key=None):
+    """Extracts internal estimating takeoff requirements from a PDF using the same model fallback list as quote processing."""
+    if not api_key:
+        api_key = os.environ.get("GEMINI_API_KEY", "")
+    if not api_key:
+        try:
+            api_key = st.secrets.get("GEMINI_API_KEY", "")
+        except Exception:
+            api_key = ""
+            
+    if not api_key:
+        st.error("API Key is missing.")
+        return None
+        
+    try:
+        client = genai.Client(api_key=api_key)
+        pdf_part = types.Part.from_bytes(data=file_buffer.getvalue(), mime_type="application/pdf")
+        
+        csi_options = "\n           - ".join(CSI_CODES)
+        prompt = f"""
+        You are an estimator extracting a Bill of Materials / Internal Takeoff from a document.
+        Extract every required material, equipment, or service listed.
+        1. Classify the trade STRICTLY into one of these:
+           - {csi_options}
+        2. Translate units to: 'SqFt', 'LnFt', 'CuYd', 'SqYd', 'Ea', 'Hrs', 'Ton', 'Lbs', 'Gal', 'Lump Sum'.
+        3. Extract the required quantity and the estimated unit cost (if listed).
+        """
+        
+        models_to_try = [
+            'gemini-3.5-flash',
+            'gemini-3.6-pro',
+            'gemini-3.6-flash'
+        ]
+        
+        for model_name in models_to_try:
+            for attempt in range(3):
+                try:
+                    response = client.models.generate_content(
+                        model=model_name,
+                        contents=[pdf_part, prompt],
+                        config={'response_mime_type': 'application/json', 'response_schema': TakeoffExtraction, 'temperature': 0.0}
+                    )
+                    if response.text:
+                        return json.loads(response.text)
+                except Exception as e:
+                    error_str = str(e)
+                    if "429" in error_str or "503" in error_str or "quota" in error_str.lower():
+                        wait_time = 2 * (attempt + 1)
+                        time.sleep(wait_time)
+                        continue
+                    else:
+                        break
+                        
+        st.error("Google AI rate limit or quota exceeded across all models. Please wait a moment or check your Google AI Studio plan details.")
+        return None
+    except Exception as e:
+        st.error(f"Failed to extract takeoffs: {e}")
+        return None
+
 # ----------------------------------------
 # Multimodal PDF Vision Processing Engine (With Security Fencing, Takeoff Injection & 503 Auto-Retry)
 # ----------------------------------------
